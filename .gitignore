@@ -1,0 +1,5 @@
+# Ignore Python byte code files.
+*.pyc
+
+# Ignore temporary editor files.
+*~
