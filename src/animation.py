@@ -21,12 +21,10 @@ Colors = enum(
 
 # 1080 pixels, screen height = 0.28 meters 
 # for 23" screen with 16:9 display ratio.
-SCALE = 1080/0.286258    
+SCALE   = 1080/0.286258
+WORLD_X = 0.2*SCALE # 0.2 m.
+WORLD_Y = 0.2*SCALE # 0.2 m.
 
-WORLD_X = 0.2*SCALE
-WORLD_Y = 0.2*SCALE
-
-# A square world of sides 20 cm long.
 world = World(Vec(0.0, 0.0), Vec(WORLD_X, WORLD_Y))
 
 d = Disk(init_pos   = Vec(0.5*WORLD_X, 0.5*WORLD_Y),
@@ -38,7 +36,7 @@ d = Disk(init_pos   = Vec(0.5*WORLD_X, 0.5*WORLD_Y),
 world.add_disk(d)
 
 pygame.init()
-screen = pygame.display.set_mode((int(WORLD_X), int(WORLD_Y))) #Screen size.
+screen = pygame.display.set_mode((int(WORLD_X), int(WORLD_Y)))
 clock = pygame.time.Clock()   
 
 main_loop = True 
@@ -66,16 +64,13 @@ while main_loop:
 #   VIEW
 #===============================================================================
 #   Start with a blank screen.
-    screen.fill(white)
+    screen.fill(Colors.white)
     
     for i,disk in enumerate(world.disks):
-        pos = [disk.pos.x, WORLD_Y - disk.pos.y]
-        pos = map(int, pos)
+        col = Colors.blue
+        pos = map(int, [disk.pos.x, WORLD_Y - disk.pos.y])
         radius = int(disk.radius)
-        if i < 100:
-            col = Colors.blue
-        else:
-            col = Colors.red
+
 #       Draw a circle (screen, color, position, radius, width = 0).
         pygame.draw.circle(screen, col, pos, radius, 0) 
          
