@@ -3,42 +3,46 @@
 from physics import *
 
 import pygame
-#import sys
 from pygame.locals import *
-import random
 
-SCALE = 1080/0.286258  # 1080 pixels, 23" screen height = 0.28 meters.
-SCALE = 1920/0.5092700 # Same story.
+# 'Hack' to creates an enum-like class in Python.
+# See: http://stackoverflow.com/questions/36932/
+def enum(**enums):
+    return type('Enum', (), enums)
 
-WORLD_X = 0.25*SCALE
-WORLD_Y = 0.25*SCALE
+# RGB color definitions.
+Colors = enum(
+    red   = (255,   0,   0),
+    green = (  0, 255,   0),
+    blue  = (  0,   0, 255),
+    black = (  0,   0,   0),
+    white = (255, 255, 255),
+)
 
-pygame.init()
-screen = pygame.display.set_mode((int(WORLD_X), int(WORLD_Y))) #Screen size
-clock = pygame.time.Clock()
+# 1080 pixels, screen height = 0.28 meters 
+# for 23" screen with 16:9 display ratio.
+SCALE = 1080/0.286258    
 
-blue = (0,0,255)
-red = (255, 0, 0)
-black = (0, 0, 0)
-white = (255,255,255)
+WORLD_X = 0.2*SCALE
+WORLD_Y = 0.2*SCALE
 
+# A square world of sides 20 cm long.
 world = World(Vec(0.0, 0.0), Vec(WORLD_X, WORLD_Y))
 
-pos = Vec(0.05*SCALE, 0.2*SCALE)
-vel = Vec(1.5*SCALE, 0.0*SCALE) # converts 10m/sec to pixels/sec
-d = Disk(pos, 0.02*SCALE, 100.0, init_vel = vel, coeff_rest = 0.75)
+d = Disk(init_pos   = Vec(0.5*WORLD_X, 0.5*WORLD_Y),
+         init_vel   = Vec(2.5*SCALE, 2.5*SCALE),
+         radius     = 0.02*SCALE, 
+         mass       = 10.0, 
+         coeff_rest = 0.75)
+
 world.add_disk(d)
 
-pos += Vec(0.1*SCALE, -0.1*SCALE)
-vel = Vec(3.0*SCALE, 0.0)
-d = Disk(pos, 0.005*SCALE, 12.5, init_vel = vel, coeff_rest = 0.75)
-world.add_disk(d)
-    
+pygame.init()
+screen = pygame.display.set_mode((int(WORLD_X), int(WORLD_Y))) #Screen size.
+clock = pygame.time.Clock()   
 
-t = 0
 main_loop = True 
 while main_loop:
-    t += 0.01
     clock.tick(1000) #FPS
     
 #===============================================================================
@@ -46,7 +50,7 @@ while main_loop:
 #===============================================================================
 #   Check for events (key presses, mouse movement etc.).
     for event in pygame.event.get():
-#       X button pressed in the pygame window.
+#       X button pressed in the Pygame window.
         if event.type == pygame.QUIT:
             main_loop = False
 #       Escape key pressed on keyboard.
@@ -57,9 +61,6 @@ while main_loop:
 #   MODEL
 #===============================================================================
     world.step(0.001)
-    KE = 0
-    for disk in world.disks:
-        KE += disk.kinetic_energy()
 
 #===============================================================================
 #   VIEW
@@ -72,15 +73,13 @@ while main_loop:
         pos = map(int, pos)
         radius = int(disk.radius)
         if i < 100:
-            col = blue
+            col = Colors.blue
         else:
-            col = red
+            col = Colors.red
 #       Draw a circle (screen, color, position, radius, width = 0).
         pygame.draw.circle(screen, col, pos, radius, 0) 
          
-#       Draw onto the display.
-        pygame.display.flip()
-    
-        print KE
+#   Draw onto the display.
+    pygame.display.flip()
 
 pygame.quit()
