@@ -1,30 +1,13 @@
 #!/usr/bin/env python2.7
 
+from definitions import *
 from physics import *
 
 import pygame
 from pygame.locals import *
 
-# 'Hack' to creates an enum-like class in Python.
-# See: http://stackoverflow.com/questions/36932/
-def enum(**enums):
-    return type('Enum', (), enums)
-
-# RGB color definitions.
-Colors = enum(
-    red   = (255,   0,   0),
-    green = (  0, 255,   0),
-    blue  = (  0,   0, 255),
-    black = (  0,   0,   0),
-    white = (255, 255, 255),
-)
-
-# 1080 pixels, screen height = 0.28 meters 
-# for 23" screen with 16:9 display ratio.
-SCALE   = 1080/0.286258
 WORLD_X = 0.2*SCALE # 0.2 m.
 WORLD_Y = 0.2*SCALE # 0.2 m.
-
 world = World(Vec(0.0, 0.0), Vec(WORLD_X, WORLD_Y))
 
 d = Disk(init_pos   = Vec(0.5*WORLD_X, 0.5*WORLD_Y),
@@ -32,7 +15,7 @@ d = Disk(init_pos   = Vec(0.5*WORLD_X, 0.5*WORLD_Y),
          radius     = 0.02*SCALE, 
          mass       = 10.0, 
          coeff_rest = 0.75)
-
+         
 world.add_disk(d)
 
 pygame.init()
